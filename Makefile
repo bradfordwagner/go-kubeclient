@@ -10,11 +10,12 @@ clean:
 	@rm -rf ./dist ./mocks
 
 test:
-	@go test ./...
+	@dagger -m dagger call test
 
 d: dev
 i: install
 c: clean
+t: test
 
 # watch / develop
 dev_pipeline: test

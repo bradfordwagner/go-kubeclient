@@ -36,27 +36,12 @@ func (m *Dagger) Test(
 	}
 
 	configFile := k3s.Config()
-
-	//time.Sleep(10 * time.Second)
-
-	//return dag.Container().From("bitnami/kubectl").
-	//	WithEnvVariable("KUBECONFIG", "/.kube/config").
-	//	WithFile("/.kube/config", configFile, dagger.ContainerWithFileOpts{
-	//		Permissions: 0755,
-	//	}).
-	//	WithExec([]string{"kubectl", "get", "pods", "-A"}).
-	//	Stdout(ctx)
 	return dag.Container().From("ghcr.io/bradfordwagner/go-builder:3.2.0-alpine_3.19").
 		WithEnvVariable("KUBECONFIG", "/.kube/config").
 		WithDirectory("/src", src).
 		WithFile("/.kube/config", configFile, dagger.ContainerWithFileOpts{
 			Permissions: 0755,
 		}).
-		//WithExec([]string{"apk", "add", "kubectl"}).
-		//WithExec([]string{"kubectl", "get", "pods", "-A"}).
-		// go test ./...
-		//WithExec([]string{"go", "version"}).
 		WithExec([]string{"go", "test", "./..."}).
-		//WithExec([]string{"ls", "-la", "/src"}).
 		Stdout(ctx)
 }
