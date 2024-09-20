@@ -1,7 +1,8 @@
-package kube
+package kube_test
 
 import (
 	"context"
+	"github.com/bradfordwagner/go-kubeclient/kube"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -10,13 +11,13 @@ import (
 var _ = Describe("Client", func() {
 
 	It("should create a kubernetes client", func() {
-		clientset, err := Client()
+		clientset, err := kube.Client()
 		Expect(err).ToNot(HaveOccurred())
 		Expect(clientset).ToNot(BeNil())
 	})
 
 	It("will list all pods in all namespaces", func() {
-		clientset, err := Client()
+		clientset, err := kube.Client()
 		Expect(err).ToNot(HaveOccurred())
 		Expect(clientset).ToNot(BeNil())
 
