@@ -1,4 +1,4 @@
-package template
+package kube
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestTemplate(t *testing.T) {
+func TestKube(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Template Suite")
+	RunSpecs(t, "Kube Suite")
 }

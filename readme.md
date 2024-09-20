@@ -1,3 +1,3 @@
-# gh-template-go-lib
-Template for creating go repositories
+# go-kubeclient
+Helper to interact with kubernetes cluster using go-client
 
