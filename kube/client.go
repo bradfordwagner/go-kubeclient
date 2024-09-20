@@ -3,6 +3,7 @@ package kube
 import (
 	"context"
 	"encoding/json"
+	"os"
 	"strings"
 
 	"github.com/bradfordwagner/go-util/log"
@@ -15,8 +16,9 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func Client(kubeconfig string) (clientset kubernetes.Interface, err error) {
+func Client() (clientset kubernetes.Interface, err error) {
 	l := log.Log()
+	kubeconfig := defaultKubeConfig()
 	config, err := config(kubeconfig)
 	if err != nil {
 		l.With("error", err).Error("failed to create kubernetes config")
@@ -35,9 +37,10 @@ func Client(kubeconfig string) (clientset kubernetes.Interface, err error) {
 	return
 }
 
-func Dynamic(kubeconfig string) (d dynamic.Interface, err error) {
+func Dynamic() (d dynamic.Interface, err error) {
 	l := log.Log()
 
+	kubeconfig := defaultKubeConfig()
 	config, err := config(kubeconfig)
 	if err != nil {
 		l.With("error", err).Error("failed to create kubernetes config")
@@ -47,6 +50,14 @@ func Dynamic(kubeconfig string) (d dynamic.Interface, err error) {
 	d, err = dynamic.NewForConfig(config)
 	if err != nil {
 		l.With("error", err).Error("failed to create kubernetes dynamic client")
+	}
+	return
+}
+
+func defaultKubeConfig() (kubeconfig string) {
+	kubeconfig = os.Getenv("KUBECONFIG")
+	if kubeconfig == "" {
+		kubeconfig = os.Getenv("HOME") + "/.kube/config"
 	}
 	return
 }

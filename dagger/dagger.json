@@ -1,0 +1,12 @@
+{
+  "name": "dagger",
+  "sdk": "go",
+  "dependencies": [
+    {
+      "name": "k3s",
+      "source": "github.com/marcosnils/daggerverse/k3s@be7d810261b8719da2cb977132aa51bcab094972"
+    }
+  ],
+  "source": ".",
+  "engineVersion": "v0.13.1"
+}
