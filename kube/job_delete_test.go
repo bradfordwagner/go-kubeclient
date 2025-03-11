@@ -89,7 +89,7 @@ var _ = Describe("JobDelete", func() {
 
 		// do not emit any events to watcher, to force timeout
 
-		// failure!!
+		// failure -- timeout!!
 		err = eg.Wait()
 		Expect(err).ShouldNot(Succeed())
 		Expect(err.Error()).To(ContainSubstring("context deadline exceeded"))
