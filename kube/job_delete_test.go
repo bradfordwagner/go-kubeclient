@@ -15,10 +15,6 @@ import (
 )
 
 var _ = Describe("JobDelete", func() {
-	It("will succed", func() {
-		Succeed()
-	})
-
 	It("will delete a job", func() {
 		kubeClient := fake.NewClientset()
 		ns, job := "default", "job"
