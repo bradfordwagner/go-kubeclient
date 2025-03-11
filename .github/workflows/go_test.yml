@@ -1,4 +1,11 @@
 name: go_test
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+  workflow_dispatch: {}
 jobs:
   go-test:
     permissions: write-all
