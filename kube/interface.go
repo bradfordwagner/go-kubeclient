@@ -12,6 +12,7 @@ type Interface interface {
 
 type JobInterface interface {
 	DeleteJob(ctx context.Context, namespace, jobName string) (err error)
+	WaitForJobCompletion(ctx context.Context, namespace, jobName string) (err error)
 }
 
 type client struct {
