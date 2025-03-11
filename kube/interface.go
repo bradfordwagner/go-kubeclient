@@ -7,10 +7,11 @@ import (
 
 type Interface interface {
 	JobInterface
+	GetClient() kubernetes.Interface
 }
 
 type JobInterface interface {
-	DeleteJob(ctx context.Context, namespace, jobName string) error
+	DeleteJob(ctx context.Context, namespace, jobName string) (err error)
 }
 
 type client struct {
@@ -18,8 +19,12 @@ type client struct {
 	kubeClient kubernetes.Interface
 }
 
-func NewClient(kubeClient kubernetes.Interface) Interface {
+func NewClientInterface(kubeClient kubernetes.Interface) Interface {
 	return &client{
 		kubeClient: kubeClient,
 	}
+}
+
+func (c *client) GetClient() kubernetes.Interface {
+	return c.kubeClient
 }

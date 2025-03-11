@@ -1,9 +1,11 @@
 module github.com/bradfordwagner/go-kubeclient
 
-go 1.22.0
+go 1.23.0
+
+toolchain go1.23.7
 
 require (
-	github.com/bradfordwagner/go-util v0.30.0
+	github.com/bradfordwagner/go-util v0.30.1
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
 	k8s.io/api v0.31.1
@@ -40,6 +42,7 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
+	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/term v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
