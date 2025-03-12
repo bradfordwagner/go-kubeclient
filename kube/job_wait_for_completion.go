@@ -3,17 +3,18 @@ package kube
 import (
 	"context"
 	"fmt"
+	"github.com/bradfordwagner/go-util/bwutil"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
-	"k8s.io/client-go/kubernetes"
 )
 
 // WaitForJobCompletion waits for a job to complete
-func WaitForJobCompletion(ctx context.Context, client kubernetes.Interface, namespace, jobName string) error {
-	watcher, err := client.BatchV1().Jobs(namespace).Watch(ctx, metav1.ListOptions{
-		FieldSelector: "metadata.name=" + jobName,
+func (c *client) WaitForJobCompletion(ctx context.Context, namespace, jobName string) (err error) {
+	watcher, err := c.kubeClient.BatchV1().Jobs(namespace).Watch(ctx, metav1.ListOptions{
+		FieldSelector:  "metadata.name=" + jobName,
+		TimeoutSeconds: bwutil.Pointer[int64](365 * 24 * 60 * 60), // 1 year
 	})
 	if err != nil {
 		return err
@@ -22,7 +23,11 @@ func WaitForJobCompletion(ctx context.Context, client kubernetes.Interface, name
 
 	for {
 		select {
-		case event := <-watcher.ResultChan():
+		case event, open := <-watcher.ResultChan():
+			if !open {
+				return
+			}
+
 			if event.Type == watch.Error {
 				return fmt.Errorf("error watching job")
 			}
