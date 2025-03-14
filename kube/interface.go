@@ -26,6 +26,15 @@ func NewClientInterface(kubeClient kubernetes.Interface) Interface {
 	}
 }
 
+// NewDefaultClientInterface creates a new client interface with the default kube client
+func NewDefaultClientInterface() (Interface, error) {
+	kubeClient, err := Client()
+	if err != nil {
+		return nil, err
+	}
+	return NewClientInterface(kubeClient), nil
+}
+
 func (c *client) GetClient() kubernetes.Interface {
 	return c.kubeClient
 }
