@@ -6,6 +6,7 @@ import (
 )
 
 type Interface interface {
+	ConfigmapInterface
 	JobInterface
 	GetClient() kubernetes.Interface
 }
@@ -13,6 +14,11 @@ type Interface interface {
 type JobInterface interface {
 	DeleteJob(ctx context.Context, namespace, jobName string) (err error)
 	WaitForJobCompletion(ctx context.Context, namespace, jobName string) (err error)
+}
+
+type ConfigmapInterface interface {
+	ConfigmapGet(ctx context.Context, namespace, name string) (data map[string]string, exists bool, err error)
+	ConfigmapDelete(ctx context.Context, namespace, name string) (err error)
 }
 
 type client struct {
