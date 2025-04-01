@@ -9,7 +9,7 @@ import (
 // ConfigmapDelete deletes a configmap
 func (c *client) ConfigmapDelete(ctx context.Context, namespace, name string) (err error) {
 	err = c.kubeClient.CoreV1().ConfigMaps(namespace).Delete(ctx, name, metav1.DeleteOptions{})
-	if !errors.IsNotFound(err) {
+	if errors.IsNotFound(err) {
 		err = nil
 	}
 	return
