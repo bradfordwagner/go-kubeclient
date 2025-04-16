@@ -8,6 +8,7 @@ import (
 type Interface interface {
 	ConfigmapInterface
 	JobInterface
+	SecretInterface
 	GetClient() kubernetes.Interface
 }
 
@@ -19,6 +20,11 @@ type JobInterface interface {
 type ConfigmapInterface interface {
 	ConfigmapGet(ctx context.Context, namespace, name string) (data map[string]string, exists bool, err error)
 	ConfigmapDelete(ctx context.Context, namespace, name string) (err error)
+}
+
+type SecretInterface interface {
+	SecretGet(ctx context.Context, namespace, name string) (data map[string]string, exists bool, err error)
+	SecretDelete(ctx context.Context, namespace, name string) (err error)
 }
 
 type client struct {
