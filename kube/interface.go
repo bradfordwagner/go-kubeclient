@@ -24,7 +24,7 @@ type ConfigmapInterface interface {
 
 type SecretInterface interface {
 	SecretGet(ctx context.Context, namespace, name string) (data map[string]string, exists bool, err error)
-	//SecretDelete(ctx context.Context, namespace, name string) (err error)
+	SecretDelete(ctx context.Context, namespace, name string) (err error)
 }
 
 type client struct {
