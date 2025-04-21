@@ -3,7 +3,6 @@ package kube
 import (
 	"context"
 	"github.com/bradfordwagner/go-util/bwutil"
-	"github.com/bradfordwagner/go-util/log"
 	"golang.org/x/sync/errgroup"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -13,10 +12,8 @@ import (
 // DeleteJob deletes a job synchronously
 // returns an error if we could not delete the job
 func (c *client) DeleteJob(ctx context.Context, namespace, jobName string) (err error) {
-	l := log.Log().With("action", "delete", "namespace", namespace, "job", jobName)
 	_, err = c.kubeClient.BatchV1().Jobs(namespace).Get(ctx, jobName, metav1.GetOptions{})
 	if err != nil && errors.IsNotFound(err) {
-		l.Info("job not found")
 		return nil
 	}
 
@@ -55,11 +52,5 @@ func (c *client) DeleteJob(ctx context.Context, namespace, jobName string) (err 
 	})
 
 	// collect results
-	err = errgroup.Wait()
-	if err != nil {
-		l.With("error", err).Error("failed to delete job")
-	} else {
-		l.Info("job deleted")
-	}
-	return
+	return errgroup.Wait()
 }
