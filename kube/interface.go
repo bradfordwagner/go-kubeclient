@@ -9,6 +9,7 @@ type Interface interface {
 	ConfigmapInterface
 	JobInterface
 	SecretInterface
+	StatefulSetInterface
 	GetClient() kubernetes.Interface
 }
 
@@ -25,6 +26,10 @@ type ConfigmapInterface interface {
 type SecretInterface interface {
 	SecretGet(ctx context.Context, namespace, name string) (data map[string]string, exists bool, err error)
 	SecretDelete(ctx context.Context, namespace, name string) (err error)
+}
+
+type StatefulSetInterface interface {
+	WatchStatefulset(ctx context.Context, namespace, name string) (watcher StatefulSetWatcher, err error)
 }
 
 type client struct {
