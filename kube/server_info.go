@@ -1,7 +1,6 @@
 package kube
 
 import (
-	"encoding/base64"
 	"fmt"
 )
 
@@ -15,7 +14,7 @@ func (c *client) GetServerInfo() (server string, ca string, err error) {
 
 	server = c.config.Host
 	if c.config.TLSClientConfig.CAData != nil {
-		ca = base64.StdEncoding.EncodeToString(c.config.TLSClientConfig.CAData)
+		ca = string(c.config.TLSClientConfig.CAData)
 	}
 
 	return

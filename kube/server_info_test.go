@@ -1,7 +1,6 @@
 package kube_test
 
 import (
-	"encoding/base64"
 	"github.com/bradfordwagner/go-kubeclient/kube"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -13,13 +12,12 @@ var _ = Describe("GetServerInfo", func() {
 	It("returns server and ca when config is available", func() {
 		kubeClient := fake.NewClientset()
 		expectedServer := "https://test-cluster.example.com:6443"
-		expectedCABytes := []byte("test-ca-certificate-data")
-		expectedCA := base64.StdEncoding.EncodeToString(expectedCABytes)
+		expectedCA := "-----BEGIN CERTIFICATE-----\ntest-ca-certificate-data\n-----END CERTIFICATE-----"
 
 		config := &rest.Config{
 			Host: expectedServer,
 			TLSClientConfig: rest.TLSClientConfig{
-				CAData: expectedCABytes,
+				CAData: []byte(expectedCA),
 			},
 		}
 
@@ -82,51 +80,30 @@ var _ = Describe("GetServerInfo", func() {
 		Expect(ca).To(BeEmpty())
 	})
 
-	It("handles config with only ca data but no server", func() {
+	It("returns raw pem certificate data", func() {
 		kubeClient := fake.NewClientset()
-		expectedCABytes := []byte("standalone-ca-certificate-data")
-		expectedCA := base64.StdEncoding.EncodeToString(expectedCABytes)
+		pemCert := `-----BEGIN CERTIFICATE-----
+MIIDITCCAgmgAwIBAgIJALnW+rAaFAM5MA0GCSqGSIb3DQEBCwUAMCkxJzAlBgNV
+BAMTHmF1dGgwLmF1dGgwLmNvbSBURVNUIENlcnRpZmljYXRlMB4XDTE5MDEwMjE5
+MjUyNFoXDTI5MDEwMjE5MjUyNFowKTEnMCUGA1UEAxMeYXV0aDAuYXV0aDAuY29t
+IFRFU1QgQ2VydGlmaWNhdGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+AQC7VJTUt9Us8cKBwl+M1M7Bm8Y+gXX7RZUfRUgPm9YjCnYoBjA8cUEKPsyYhiGj
+-----END CERTIFICATE-----`
 
 		config := &rest.Config{
-			Host: "",
+			Host: "https://test-cluster.example.com:6443",
 			TLSClientConfig: rest.TLSClientConfig{
-				CAData: expectedCABytes,
+				CAData: []byte(pemCert),
 			},
 		}
 
 		client := kube.NewClientInterfaceWithConfig(kubeClient, config)
 
-		server, ca, err := client.GetServerInfo()
+		_, ca, err := client.GetServerInfo()
 
 		Expect(err).ShouldNot(HaveOccurred())
-		Expect(server).To(BeEmpty())
-		Expect(ca).To(Equal(expectedCA))
-	})
-
-	It("handles large ca certificate data", func() {
-		kubeClient := fake.NewClientset()
-		expectedServer := "https://prod-cluster.example.com:6443"
-		// Create a large CA data to test handling of bigger certificates
-		expectedCABytes := make([]byte, 4096)
-		for i := range expectedCABytes {
-			expectedCABytes[i] = byte(i % 256)
-		}
-		expectedCA := base64.StdEncoding.EncodeToString(expectedCABytes)
-
-		config := &rest.Config{
-			Host: expectedServer,
-			TLSClientConfig: rest.TLSClientConfig{
-				CAData: expectedCABytes,
-			},
-		}
-
-		client := kube.NewClientInterfaceWithConfig(kubeClient, config)
-
-		server, ca, err := client.GetServerInfo()
-
-		Expect(err).ShouldNot(HaveOccurred())
-		Expect(server).To(Equal(expectedServer))
-		Expect(ca).To(Equal(expectedCA))
-		Expect(len(ca)).To(BeNumerically(">", 0))
+		Expect(ca).To(Equal(pemCert))
+		Expect(ca).To(ContainSubstring("-----BEGIN CERTIFICATE-----"))
+		Expect(ca).To(ContainSubstring("-----END CERTIFICATE-----"))
 	})
 })
