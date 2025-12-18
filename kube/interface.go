@@ -14,6 +14,7 @@ type Interface interface {
 	ServiceAccountInterface
 	StatefulSetInterface
 	GetClient() kubernetes.Interface
+	GetRestConfig() *rest.Config
 	GetServerInfo() (server string, ca string, err error)
 }
 
@@ -78,4 +79,8 @@ func NewDefaultClientInterface() (clint Interface, kubeClient kubernetes.Interfa
 
 func (c *client) GetClient() kubernetes.Interface {
 	return c.kubeClient
+}
+
+func (c *client) GetRestConfig() *rest.Config {
+	return c.config
 }
